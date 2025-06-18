@@ -1,0 +1,14 @@
+--SELECT * FROM Products;
+--SELECT * FROM Sales;
+
+--SELECT DATEADD(YEAR,-1, GETDATE()), YEAR(GETDATE()), DATEFROMPARTS(YEAR(GETDATE())-1, 1,1) , DATEFROMPARTS(YEAR(GETDATE())-1, 12,31)
+
+SELECT 
+P.Category, 
+SUM(S.Revenue) AS TotalRevenue,
+ROUND(SUM(s.Revenue) * 100.0 / SUM(SUM(s.Revenue)) OVER (), 2) AS PercentageContribution
+FROM Sales S JOIN Products P ON S.ProductID = P.ProductID 
+WHERE SaleDate BETWEEN DATEFROMPARTS(YEAR(GETDATE())-1, 1,1) AND DATEFROMPARTS(YEAR(GETDATE())-1, 12,31)
+GROUP BY P.Category
+HAVING SUM(S.Revenue) > 0
+
